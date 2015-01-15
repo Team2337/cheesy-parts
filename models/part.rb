@@ -14,6 +14,8 @@ class Part < Sequel::Model
   STATUS_MAP = { "designing" => "Design in progress",
                  "material" => "Material needs to be ordered",
                  "ordered" => "Waiting for materials",
+                 "review" => "Needs to be reviewed by Section Leader / Mentor",
+                 "rough" => "Ready for Rough Cutting",
                  "drawing" => "Needs drawing",
                  "ready" => "Ready to manufacture",
                  "manufacturing" => "Manufacturing in progress",
