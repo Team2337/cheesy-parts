@@ -7,7 +7,7 @@
     </div>
   </div>
   <div class="well">
-  <% Project.reject { |project| project.hide_dashboards == 1 }.each do |project| %>
+  <% Project.reject { |project| project.hide_dashboards == 1 }.reverse_each do |project| %>
     <li><h4>
       <a href="/projects/<%= project.id %>/orders/open"><%= project.name %> &ndash; Open orders</a>
     </h4></li>
@@ -22,6 +22,7 @@
         <%= project.name %> &ndash; Order totals and statistics
       </a>
     </h4></li>
+    <hr>
   <% end %>
   </div>
 </div>
