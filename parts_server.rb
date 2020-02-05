@@ -115,7 +115,7 @@ module CheesyParts
       halt(400, "Missing project name.") if params[:name].nil?
       halt(400, "Missing part number prefix.") if params[:part_number_prefix].nil?
 
-      project = Project.create(:name => params[:name], :part_number_prefix => params[:part_number_prefix], :hide_dashboards => false)
+      project = Project.create(:name => params[:name].gsub("\"", "&quot;"), :part_number_prefix => params[:part_number_prefix].gsub("\"", "&quot;"), :hide_dashboards => false)
       redirect "/projects/#{project.id}"
     end
 
@@ -142,9 +142,9 @@ module CheesyParts
     post "/projects/:id/edit" do
       require_permission(@user.can_administer?)
 
-      @project.name = params[:name] if params[:name]
+      @project.name = params[:name].gsub("\"", "&quot;") if params[:name]
       if params[:part_number_prefix]
-        @project.part_number_prefix = params[:part_number_prefix]
+        @project.part_number_prefix = params[:part_number_prefix].gsub("\"", "&quot;")
       end
       @project.save
       redirect "/projects/#{params[:id]}"
@@ -251,11 +251,11 @@ module CheesyParts
         halt(400, "Invalid status.") unless Part::STATUS_MAP.include?(params[:status])
         @part.status = params[:status]
       end
-      @part.notes = params[:notes] if params[:notes]
-      @part.source_material = params[:source_material] if params[:source_material]
+      @part.notes = params[:notes].gsub("\"", "&quot;") if params[:notes]
+      @part.source_material = params[:source_material].gsub("\"", "&quot;") if params[:source_material]
       @part.have_material = (params[:have_material] == "on") ? 1 : 0 if params[:have_material]
-      @part.cut_length = params[:cut_length] if params[:cut_length]
-      @part.quantity = params[:quantity] if params[:quantity]
+      @part.cut_length = params[:cut_length].gsub("\"", "&quot;") if params[:cut_length]
+      @part.quantity = params[:quantity].gsub("\"", "&quot;") if params[:quantity]
       @part.drawing_created = (params[:drawing_created] == "on") ? 1 : 0 if params[:drawing_created]
       @part.priority = params[:priority] if params[:priority]
       @part.save
