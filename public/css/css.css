@@ -13,6 +13,12 @@ label {
 .label-status-ordered {
   background-color: #f90;
 }
+.label-status-review {
+  background-color: #e5f;
+}
+.label-status-rough {
+  background-color: #b00;
+}
 .label-status-drawing {
   background-color: #bb0;
 }
