@@ -128,7 +128,7 @@ module CheesyParts
       if ["type", "name", "parent_part_id", "status"].include?(params[:sort])
         @part_sort = params[:sort].to_sym
       else
-        @part_sort = :id
+        @part_sort = :part_number
       end
       erb :project
     end
@@ -226,7 +226,7 @@ module CheesyParts
       if ["type", "name", "parent_part_id", "status"].include?(params[:sort])
         @part_sort = params[:sort].to_sym
       else
-        @part_sort = :id
+        @part_sort = :part_number
       end
       erb :part
     end
