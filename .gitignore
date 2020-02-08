@@ -2,3 +2,4 @@
 *.pid
 vendor
 config.json
+uploads

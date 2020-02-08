@@ -11,6 +11,14 @@ function verifyPasswordMatch(form) {
   }
 }
 
+function verifyFileTypes(form) {
+  if(form.drawing.value.match(/\.[^\.]+$/) == ".pdf" || form.drawing.value == ""){
+      return true;
+  }
+  alert("Drawing file type is invalid. Please submit a PDF drawing.");
+  return false;
+}
+
 // Global variables to store current filter state for auto-refresh.
 var dashboardProjectId, dashboardStatus;
 

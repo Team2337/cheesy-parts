@@ -7,6 +7,7 @@ require "active_support/time"
 require "cgi"
 require "dedent"
 require "eventmachine"
+require "fileutils"
 require "json"
 require "pathological"
 require "pony"
@@ -99,6 +100,10 @@ module CheesyParts
       end
     end
 
+    get "/uploads/*" do
+      send_file "./uploads/#{params[:splat].first}", :disposition => "inline"
+    end
+    
     get "/new_project" do
       require_permission(@user.can_administer?)
       erb :new_project
@@ -116,6 +121,7 @@ module CheesyParts
       halt(400, "Missing part number prefix.") if params[:part_number_prefix].nil?
 
       project = Project.create(:name => params[:name].gsub("\"", "&quot;"), :part_number_prefix => params[:part_number_prefix].gsub("\"", "&quot;"), :hide_dashboards => false)
+      FileUtils.mkdir_p "./uploads/#{project.id}/drawings"
       redirect "/projects/#{project.id}"
     end
 
@@ -159,6 +165,7 @@ module CheesyParts
     post "/projects/:id/delete" do
       require_permission(@user.can_administer?)
 
+      FileUtils.remove_dir "./uploads/#{@project.id}"
       @project.delete
       redirect "/projects"
     end
@@ -251,6 +258,13 @@ module CheesyParts
         halt(400, "Invalid status.") unless Part::STATUS_MAP.include?(params[:status])
         @part.status = params[:status]
       end
+
+      if params[:drawing]
+        # FileUtils.copy will create the directory path it needs, and will replace existing files,
+        # so don't need validation checks or to remove the old file first
+        FileUtils.copy(params[:drawing][:tempfile].path, "./uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.pdf")
+      end
+
       @part.notes = params[:notes].gsub("\"", "&quot;") if params[:notes]
       @part.source_material = params[:source_material].gsub("\"", "&quot;") if params[:source_material]
       @part.have_material = (params[:have_material] == "on") ? 1 : 0 if params[:have_material]
@@ -278,7 +292,10 @@ module CheesyParts
       project_id = @part.project_id
       halt(400, "Invalid part.") if @part.nil?
       halt(400, "Can't delete assembly with existing children.") unless @part.child_parts.empty?
+
+      FileUtils.remove("./uploads/#{project_id}/drawings/#{@part.full_part_number}.pdf")
       @part.delete
+
       params[:referrer] = nil if params[:referrer] =~ /\/parts\/#{params[:id]}$/
       redirect params[:referrer] || "/projects/#{project_id}"
     end
