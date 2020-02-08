@@ -12,11 +12,15 @@ function verifyPasswordMatch(form) {
 }
 
 function verifyFileTypes(form) {
-  if(form.drawing.value.match(/\.[^\.]+$/) == ".pdf" || form.drawing.value == ""){
-      return true;
+  if(form.drawing.value.match(/\.[^\.]+$/) != ".pdf" && form.drawing.value != ""){
+      alert("Drawing file type is invalid. Please submit a PDF drawing.");
+      return false;
   }
-  alert("Drawing file type is invalid. Please submit a PDF drawing.");
-  return false;
+  if(form.drawing.files[0].size/1024/1024 > 1) {  // TODO: Make max file size configurable
+    alert("Drawing must be less than 1MB.")
+    return false;
+  }
+  return true;
 }
 
 // Global variables to store current filter state for auto-refresh.
