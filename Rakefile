@@ -11,8 +11,10 @@ Sequel.extension :migration
 
 # Task for executing any pending database schema changes.
 namespace :db do
-  task :migrate do
+  task :migrate, [:version] do |t, args|
+    version = args[:version].to_i if args[:version]
+
     require_relative "db"
-    Sequel::Migrator.run(DB, "db/migrations")
+    Sequel::Migrator.run(DB, "db/migrations", target: version)
   end
 end
