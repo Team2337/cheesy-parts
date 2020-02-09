@@ -12,8 +12,6 @@
     - Ready for anodize
     - Waiting for coating
     - material needs to be ordered (consolidate with "waiting for material")
-- relabel "Material Cut Length -> "Rough Cut Length"
-- move "Quantity required" right below notes
 - Manufacturing method
     - opt. A: split "ready to manufacture"
     - opt. B: Additional Field
