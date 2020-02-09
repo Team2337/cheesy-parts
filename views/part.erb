@@ -35,6 +35,7 @@
         </tr>
 
         <tr><td><b>Part Number</b></td><td><%= @part.full_part_number %></td></tr>
+        <tr><td><b>Part Revision</b></td><td><%= @part.revision %></td></tr>
         
         <tr>
           <td><b>Status</b></td>
@@ -60,7 +61,7 @@
     <div class="span8">
       <%if @part.drawing_created == 1 %>
         <div style="position: relative; padding-bottom: 82%; /* 4:3 */	padding-top: 25px; height: 0;">
-          <object data="<%= "/uploads/" + @part.project_id.to_s + "/drawings/" + @part.full_part_number + ".pdf" %>"  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%" type="application/pdf"></object>
+          <object data="<%= "/uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.#{@part.revision}.pdf" %>"  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%" type="application/pdf"></object>
         </div>
       <% end %>
     </div>

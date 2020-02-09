@@ -7,6 +7,9 @@
     <label><span class="label label-info">Part Number</span> <%= @part.full_part_number %></label>
     <label>Part Name</label>
     <input type="text" name="name" value="<%= @part.name %>" />
+    <label>Part Revision</label>
+    <input type="text" name="revision" value="<%= @part.revision %>" />
+
     <label>Status</label>
     <select name="status">
       <% Part::STATUS_MAP.each_pair do |key, value| %>

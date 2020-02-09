@@ -259,11 +259,12 @@ module CheesyParts
         @part.status = params[:status]
       end
 
+      @part.revision = params[:revision] if (params[:revision] != "")
       if params[:drawing]
         halt(400, "Part drawing must be less than 1MB") unless (File.size(params[:drawing][:tempfile].path)/1024/1024 <= 1)
         # FileUtils.copy will create the directory path it needs, and will replace existing files,
         # so don't need validation checks or to remove the old file first
-        FileUtils.copy(params[:drawing][:tempfile].path, "./uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.pdf")
+        FileUtils.copy(params[:drawing][:tempfile].path, "./uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.#{@part.revision}.pdf")
       end
 
       @part.notes = params[:notes].gsub("\"", "&quot;") if params[:notes]
@@ -294,7 +295,7 @@ module CheesyParts
       halt(400, "Invalid part.") if @part.nil?
       halt(400, "Can't delete assembly with existing children.") unless @part.child_parts.empty?
 
-      FileUtils.remove("./uploads/#{project_id}/drawings/#{@part.full_part_number}.pdf")
+      FileUtils.remove("./uploads/#{project_id}/drawings/#{@part.full_part_number}*.pdf")
       @part.delete
 
       params[:referrer] = nil if params[:referrer] =~ /\/parts\/#{params[:id]}$/
