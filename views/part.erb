@@ -59,11 +59,30 @@
     </div>
 
     <div class="span8">
-      <%if @part.drawing_created == 1 %>
-        <div style="position: relative; padding-bottom: 82%; /* 4:3 */	padding-top: 25px; height: 0;">
-          <object data="<%= "/uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.#{@part.revision}.pdf" %>"  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%" type="application/pdf"></object>
+      <div class="tabbable">
+        <ul class="nav nav-tabs">
+          <% for i in 1..@part.revision %>
+            <li <%= "class=\"active\"" if i == @part.revision %>><a href="<%= "#rev#{i}" %>" data-toggle="tab">Rev. <%= i %></a></li>
+          <% end %>
+        </ul>
+
+        <div class="tab-content">
+          <% for i in 1..@part.revision %>
+            <div class="tab-pane <%= "active" if i == @part.revision %>" id="<%= "rev#{i}" %>">
+              <% if File.file?("uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.#{i}.pdf") %>
+                <div style="position: relative; padding-bottom: 82%; /* 4:3 */	padding-top: 25px; height: 0;">
+                  <object data="<%= "/uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.#{i}.pdf" %>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%">
+                    <a href="<%= "/uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.#{i}.pdf" %>"><%= "#{@part.full_part_number}.#{i}.pdf" %></a>
+                  </object>
+                </div>
+              <% else %>
+                <p>No drawing has been uploaded for this part revision.</p>
+              <% end %>
+            </div>
+          <% end %>
         </div>
-      <% end %>
+
+      </div>
     </div>
   </div>
 
