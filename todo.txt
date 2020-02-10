@@ -2,9 +2,10 @@
     - no revisions
     - probably just a list of direct links in the part info table, rather than embeds
     - likely need delete buttons next to each link to remove docs
-    - pdf, text/doc, images, spreadsheet, gcode (extensions?)
+    - pdf, text/doc, images, spreadsheet, gcode (extensions?), 3d print files (.STL?)
         - direct external links? Or should those just go in the notes section?
-    - probably still <1 MB, should be enough for even images (but could bump to 2 or 3 MB if needed)
+    - probably 2 MB limit (but could bump higher if needed)
+        - what about 3d print models?
 - User preferences (update name, email, password)
 - Config screen for server settings
     - max file sizes

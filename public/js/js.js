@@ -12,13 +12,37 @@ function verifyPasswordMatch(form) {
 }
 
 function verifyFileTypes(form) {
-  if(form.drawing.value.match(/\.[^\.]+$/) != ".pdf" && form.drawing.value != ""){
+  if(form.drawing.value != "") {
+    if(form.drawing.value.match(/\.[^\.]+$/) != ".pdf"){
       alert("Drawing file type is invalid. Please submit a PDF drawing.");
       return false;
+    }
+    if(form.drawing.files[0].size/1024/1024 > 1) {  // TODO: Make max file size configurable
+      alert("Drawing must be less than 1MB.");
+      return false;
+    }
   }
-  if(form.drawing.files[0].size/1024/1024 > 1) {  // TODO: Make max file size configurable
-    alert("Drawing must be less than 1MB.")
-    return false;
+  
+  if(form.supp_docs.value != "") {
+    // TODO: Customizable file types
+    fileTypes = ["application/pdf","image/png","image/jpeg",
+                 "text/plain","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                 "application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                 "application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation"];
+    
+    console.log(form.supp_docs.files);
+
+    for (let i = 0; i < form.supp_docs.files.length; i++) {
+      console.log(form.supp_docs.files[i]);
+      if(!fileTypes.includes(form.supp_docs.files[i].type)){
+        alert("Supplemental file type is invalid. Please submit a PDF, image, text file, spreadsheet, or powerpoint.");
+        return false;
+      }
+      if(form.supp_docs.files[i].size/1024/1024 > 2) {  // TODO: Make max file size configurable
+        alert("Supplemental files must be less than 2MB.");
+        return false;
+      }
+    }
   }
   return true;
 }
