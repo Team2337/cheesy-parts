@@ -21,7 +21,6 @@
 - "needs powdercoat" checkbox
 - move form validation to submit.onclick, not on sinatra routes
 
-- Hide ordering tab?
 - Slack or email integration (#parts-notification channel)?
 - What reports might be useful to have?
 - changelog

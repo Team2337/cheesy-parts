@@ -33,32 +33,32 @@ function loadParts() {
   });
 }
 
-function vendorAutoComplete(selector) {
-  $(selector).typeahead({
-    source: vendors
-  });
-}
+// function vendorAutoComplete(selector) {
+//   $(selector).typeahead({
+//     source: vendors
+//   });
+// }
 
-// Only allow editing one item at a time.
-var editingOrderItem = false;
+// // Only allow editing one item at a time.
+// var editingOrderItem = false;
 
-function editOrderItem(projectId, orderItemId) {
-  if (editingOrderItem) {
-    alert("Can only edit one item at a time.");
-    return;
-  }
-  editingOrderItem = true;
-  $.ajax({
-    url: "/projects/" + projectId + "/order_items/" + orderItemId + "/editable",
-    complete: function(response) {
-      $("#order-item-" + orderItemId).html(response.responseText);
-      vendorAutoComplete("#edit-vendor");
-      $("#edit-vendor").focus();
-    }
-  });
-}
+// function editOrderItem(projectId, orderItemId) {
+//   if (editingOrderItem) {
+//     alert("Can only edit one item at a time.");
+//     return;
+//   }
+//   editingOrderItem = true;
+//   $.ajax({
+//     url: "/projects/" + projectId + "/order_items/" + orderItemId + "/editable",
+//     complete: function(response) {
+//       $("#order-item-" + orderItemId).html(response.responseText);
+//       vendorAutoComplete("#edit-vendor");
+//       $("#edit-vendor").focus();
+//     }
+//   });
+// }
 
-$(function() {
-  vendorAutoComplete("#vendor");
-  $(".datepicker").datepicker();
-});
+// $(function() {
+//   vendorAutoComplete("#vendor");
+//   $(".datepicker").datepicker();
+// });

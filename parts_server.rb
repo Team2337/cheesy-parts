@@ -411,169 +411,169 @@ module CheesyParts
       erb :register_confirmation
     end
 
-    get "/orders" do
-      erb :orders_project_list
-    end
+    # get "/orders" do
+    #   erb :orders_project_list
+    # end
 
-    get "/projects/:id/orders/open" do
-      @no_vendor_order_items = OrderItem.where(:order_id => nil, :project_id => params[:id])
-      @vendor_orders = Order.filter(:status => "open").where(:project_id => params[:id]).
-          order(:vendor_name, :ordered_at)
-      @show_new_item_form = params[:new_item] == "true"
-      erb :open_orders
-    end
+    # get "/projects/:id/orders/open" do
+    #   @no_vendor_order_items = OrderItem.where(:order_id => nil, :project_id => params[:id])
+    #   @vendor_orders = Order.filter(:status => "open").where(:project_id => params[:id]).
+    #       order(:vendor_name, :ordered_at)
+    #   @show_new_item_form = params[:new_item] == "true"
+    #   erb :open_orders
+    # end
 
-    get "/projects/:id/orders/ordered" do
-      @vendor_orders = Order.filter(:status => "ordered").where(:project_id => params[:id]).
-          order(:vendor_name, :ordered_at)
-      erb :completed_orders
-    end
+    # get "/projects/:id/orders/ordered" do
+    #   @vendor_orders = Order.filter(:status => "ordered").where(:project_id => params[:id]).
+    #       order(:vendor_name, :ordered_at)
+    #   erb :completed_orders
+    # end
 
-    get "/projects/:id/orders/complete" do
-      @vendor_orders = Order.filter(:status => "received").where(:project_id => params[:id]).
-          order(:vendor_name, :ordered_at)
-      erb :completed_orders
-    end
+    # get "/projects/:id/orders/complete" do
+    #   @vendor_orders = Order.filter(:status => "received").where(:project_id => params[:id]).
+    #       order(:vendor_name, :ordered_at)
+    #   erb :completed_orders
+    # end
 
-    get "/projects/:id/orders/all" do
-      @vendor_orders = Order.where(:project_id => params[:id]).order(:vendor_name, :ordered_at)
-      if params[:filter]
-        key, value = params[:filter].split(":")
-        @vendor_orders = @vendor_orders.filter(key.to_sym => value)
-      end
-      erb :completed_orders
-    end
+    # get "/projects/:id/orders/all" do
+    #   @vendor_orders = Order.where(:project_id => params[:id]).order(:vendor_name, :ordered_at)
+    #   if params[:filter]
+    #     key, value = params[:filter].split(":")
+    #     @vendor_orders = @vendor_orders.filter(key.to_sym => value)
+    #   end
+    #   erb :completed_orders
+    # end
 
-    get "/projects/:id/orders/stats" do
-      @orders = Order.filter(:status => "open").invert.where(:project_id => params[:id]).all
-      @orders_by_vendor = @orders.inject({}) do |map, order|
-        map[order.vendor_name] ||= []
-        map[order.vendor_name] << order
-        map
-      end
+    # get "/projects/:id/orders/stats" do
+    #   @orders = Order.filter(:status => "open").invert.where(:project_id => params[:id]).all
+    #   @orders_by_vendor = @orders.inject({}) do |map, order|
+    #     map[order.vendor_name] ||= []
+    #     map[order.vendor_name] << order
+    #     map
+    #   end
 
-      @orders_by_purchaser = @orders.inject({}) do |map, order|
-        map[order.paid_for_by] ||= {}
-        map[order.paid_for_by][:reimbursed] ||= 0
-        map[order.paid_for_by][:outstanding] ||= 0
-        if order.reimbursed == 1
-          map[order.paid_for_by][:reimbursed] += order.total_cost
-        else
-          map[order.paid_for_by][:outstanding] += order.total_cost
-        end
-        map
-      end
+    #   @orders_by_purchaser = @orders.inject({}) do |map, order|
+    #     map[order.paid_for_by] ||= {}
+    #     map[order.paid_for_by][:reimbursed] ||= 0
+    #     map[order.paid_for_by][:outstanding] ||= 0
+    #     if order.reimbursed == 1
+    #       map[order.paid_for_by][:reimbursed] += order.total_cost
+    #     else
+    #       map[order.paid_for_by][:outstanding] += order.total_cost
+    #     end
+    #     map
+    #   end
 
-      erb :order_stats
-    end
+    #   erb :order_stats
+    # end
 
-    post "/projects/:id/order_items" do
-      require_permission(@user.can_edit?)
+    # post "/projects/:id/order_items" do
+    #   require_permission(@user.can_edit?)
 
-      # Match vendor to an existing open order or create it if there isn't one.
-      if params[:vendor].nil? || params[:vendor].empty?
-        order_id = nil
-      else
-        order = Order.where(:project_id => @project.id, :vendor_name => params[:vendor],
-                            :status => "open").first
-        if order.nil?
-          order = Order.create(:project => @project, :vendor_name => params[:vendor], :status => "open")
-        end
-        order_id = order.id
-      end
+    #   # Match vendor to an existing open order or create it if there isn't one.
+    #   if params[:vendor].nil? || params[:vendor].empty?
+    #     order_id = nil
+    #   else
+    #     order = Order.where(:project_id => @project.id, :vendor_name => params[:vendor],
+    #                         :status => "open").first
+    #     if order.nil?
+    #       order = Order.create(:project => @project, :vendor_name => params[:vendor], :status => "open")
+    #     end
+    #     order_id = order.id
+    #   end
 
-      OrderItem.create(:project => @project, :order_id => order_id, :quantity => params[:quantity].to_i,
-                       :part_number => params[:part_number], :description => params[:description],
-                       :unit_cost => params[:unit_cost].to_f, :notes => params[:notes])
-      redirect "/projects/#{@project.id}/orders/open"
-    end
+    #   OrderItem.create(:project => @project, :order_id => order_id, :quantity => params[:quantity].to_i,
+    #                    :part_number => params[:part_number], :description => params[:description],
+    #                    :unit_cost => params[:unit_cost].to_f, :notes => params[:notes])
+    #   redirect "/projects/#{@project.id}/orders/open"
+    # end
 
-    get "/projects/:project_id/order_items/:id/editable" do
-      require_permission(@user.can_edit?)
+    # get "/projects/:project_id/order_items/:id/editable" do
+    #   require_permission(@user.can_edit?)
 
-      @item = OrderItem[params[:id]]
-      halt(400, "Invalid order item.") if @item.nil?
-      erb :edit_order_item
-    end
+    #   @item = OrderItem[params[:id]]
+    #   halt(400, "Invalid order item.") if @item.nil?
+    #   erb :edit_order_item
+    # end
 
-    post "/projects/:project_id/order_items/edit" do
-      require_permission(@user.can_edit?)
+    # post "/projects/:project_id/order_items/edit" do
+    #   require_permission(@user.can_edit?)
 
-      @item = OrderItem[params[:order_item_id]]
-      halt(400, "Invalid order item.") if @item.nil?
+    #   @item = OrderItem[params[:order_item_id]]
+    #   halt(400, "Invalid order item.") if @item.nil?
 
-      # Handle a vendor change.
-      order_id = @item.order.id rescue nil
-      old_vendor = @item.order.vendor_name rescue ""
-      new_vendor = params[:vendor]
-      unless old_vendor == new_vendor
-        order = Order.where(:project_id => @project.id, :vendor_name => params[:vendor],
-                            :status => "open").first
-        if order.nil?
-          order = Order.create(:project => @project, :vendor_name => params[:vendor], :status => "open")
-        end
-        order_id = order.id
-      end
+    #   # Handle a vendor change.
+    #   order_id = @item.order.id rescue nil
+    #   old_vendor = @item.order.vendor_name rescue ""
+    #   new_vendor = params[:vendor]
+    #   unless old_vendor == new_vendor
+    #     order = Order.where(:project_id => @project.id, :vendor_name => params[:vendor],
+    #                         :status => "open").first
+    #     if order.nil?
+    #       order = Order.create(:project => @project, :vendor_name => params[:vendor], :status => "open")
+    #     end
+    #     order_id = order.id
+    #   end
 
-      @item.update(:order_id => order_id, :quantity => params[:quantity].to_i,
-                   :part_number => params[:part_number], :description => params[:description],
-                   :unit_cost => params[:unit_cost].gsub(/\$/, "").to_f, :notes => params[:notes])
-      redirect params[:referrer]
-    end
+    #   @item.update(:order_id => order_id, :quantity => params[:quantity].to_i,
+    #                :part_number => params[:part_number], :description => params[:description],
+    #                :unit_cost => params[:unit_cost].gsub(/\$/, "").to_f, :notes => params[:notes])
+    #   redirect params[:referrer]
+    # end
 
-    get "/projects/:project_id/order_items/:id/delete" do
-      require_permission(@user.can_edit?)
+    # get "/projects/:project_id/order_items/:id/delete" do
+    #   require_permission(@user.can_edit?)
 
-      @item = OrderItem[params[:id]]
-      halt(400, "Invalid order item.") if @item.nil?
-      @referrer = request.referrer
-      erb :order_item_delete
-    end
+    #   @item = OrderItem[params[:id]]
+    #   halt(400, "Invalid order item.") if @item.nil?
+    #   @referrer = request.referrer
+    #   erb :order_item_delete
+    # end
 
-    post "/projects/:project_id/order_items/:id/delete" do
-      require_permission(@user.can_edit?)
+    # post "/projects/:project_id/order_items/:id/delete" do
+    #   require_permission(@user.can_edit?)
 
-      @item = OrderItem[params[:id]]
-      halt(400, "Invalid order item.") if @item.nil?
-      @item.delete
-      redirect params[:referrer]
-    end
+    #   @item = OrderItem[params[:id]]
+    #   halt(400, "Invalid order item.") if @item.nil?
+    #   @item.delete
+    #   redirect params[:referrer]
+    # end
 
-    get "/projects/:id/orders/:order_id" do
-      @order = Order[params[:order_id]]
-      halt(400, "Invalid order.") if @order.nil?
-      erb :order
-    end
+    # get "/projects/:id/orders/:order_id" do
+    #   @order = Order[params[:order_id]]
+    #   halt(400, "Invalid order.") if @order.nil?
+    #   erb :order
+    # end
 
-    post "/projects/:id/orders/:order_id/edit" do
-      require_permission(@user.can_edit?)
+    # post "/projects/:id/orders/:order_id/edit" do
+    #   require_permission(@user.can_edit?)
 
-      @order = Order[params[:order_id]]
-      halt(400, "Invalid order.") if @order.nil?
-      @order.update(:status => params[:status], :ordered_at => params[:ordered_at],
-                    :paid_for_by => params[:paid_for_by], :tax_cost => params[:tax_cost].gsub(/\$/, ""),
-                    :shipping_cost => params[:shipping_cost].gsub(/\$/, ""), :notes => params[:notes],
-                    :reimbursed => params[:reimbursed] ? 1 : 0)
-      redirect "/projects/#{@project.id}/orders/#{@order.id}"
-    end
+    #   @order = Order[params[:order_id]]
+    #   halt(400, "Invalid order.") if @order.nil?
+    #   @order.update(:status => params[:status], :ordered_at => params[:ordered_at],
+    #                 :paid_for_by => params[:paid_for_by], :tax_cost => params[:tax_cost].gsub(/\$/, ""),
+    #                 :shipping_cost => params[:shipping_cost].gsub(/\$/, ""), :notes => params[:notes],
+    #                 :reimbursed => params[:reimbursed] ? 1 : 0)
+    #   redirect "/projects/#{@project.id}/orders/#{@order.id}"
+    # end
 
-    get "/projects/:id/orders/:order_id/delete" do
-      require_permission(@user.can_edit?)
+    # get "/projects/:id/orders/:order_id/delete" do
+    #   require_permission(@user.can_edit?)
 
-      @order = Order[params[:order_id]]
-      halt(400, "Invalid order.") if @order.nil?
-      halt(400, "Can't delete a non-empty order.") unless @order.order_items.empty?
-      erb :order_delete
-    end
+    #   @order = Order[params[:order_id]]
+    #   halt(400, "Invalid order.") if @order.nil?
+    #   halt(400, "Can't delete a non-empty order.") unless @order.order_items.empty?
+    #   erb :order_delete
+    # end
 
-    post "/projects/:id/orders/:order_id/delete" do
-      require_permission(@user.can_edit?)
+    # post "/projects/:id/orders/:order_id/delete" do
+    #   require_permission(@user.can_edit?)
 
-      @order = Order[params[:order_id]]
-      halt(400, "Invalid order.") if @order.nil?
-      halt(400, "Can't delete a non-empty order.") unless @order.order_items.empty?
-      @order.delete
-      redirect "/orders"
-    end
+    #   @order = Order[params[:order_id]]
+    #   halt(400, "Invalid order.") if @order.nil?
+    #   halt(400, "Can't delete a non-empty order.") unless @order.order_items.empty?
+    #   @order.delete
+    #   redirect "/orders"
+    # end
   end
 end

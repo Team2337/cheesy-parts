@@ -10,12 +10,16 @@
   <script src="/js/jquery-1.8.3.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
   <script src="/js/bootstrap-datepicker.js"></script>
+
+  <% if false %>
   <script>
     var vendors = [];
     <% Order.all.map(&:vendor_name).to_set.each do |vendor| %>
       vendors.push("<%= vendor %>");
     <% end %>
   </script>
+  <% end %>
+
   <script src="/js/js.js"></script>
 </head>
 <body>
@@ -37,9 +41,9 @@
               <li>
                 <a href="/dashboards"> <i class="icon-list-alt icon-black"></i> Dashboards</a>
               </li>
-              <li>
+              <%# <li>
                 <a href="/orders"> <i class="icon-shopping-cart icon-black"></i> Orders</a>
-              </li>
+              </li> %>
               <% if @user.can_administer? %>
                 <li>
                   <a href="/users"> <i class="icon-th-list icon-black"></i> Users</a>
