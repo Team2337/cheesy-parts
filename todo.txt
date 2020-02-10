@@ -19,7 +19,6 @@
         - Probably implement "manufacturing dashboard" to sort by this
             - or tweak current dashboard to choose categorization method (status, etc.)
 - "needs powdercoat" checkbox
-- Add new part/assembly buttons to part screen (not just assembly screen)
 - copy "quick status" dropdown from parts list to part info screen, too
 - move form validation to submit.onclick, not on sinatra routes
 

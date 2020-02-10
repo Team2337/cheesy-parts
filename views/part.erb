@@ -8,6 +8,13 @@
     <a href="/projects/<%= @part.project_id %>/new_part?type=assembly&parent_part_id=<%= @part.id %>"
         class="btn btn-success btn-small"><i class="icon-white icon-th"></i> New Assembly</a>
     </div>
+  <% elsif @part.type == "part" && @user.can_edit? %>
+    <div class="pull-right" style="margin-top: 15px;">
+    <a href="/projects/<%= @part.project_id %>/new_part?type=part&parent_part_id=<%= @part.parent_part_id %>"
+        class="btn btn-success btn-small"><i class="icon-white icon-cog"></i> New Part</a>
+    <a href="/projects/<%= @part.project_id %>/new_part?type=assembly&parent_part_id=<%= @part.parent_part_id %>"
+        class="btn btn-success btn-small"><i class="icon-white icon-th"></i> New Assembly</a>
+    </div>
   <% end %>
   <h2><%= @part.type.capitalize %>: <%= @part.name %></h2>
 
