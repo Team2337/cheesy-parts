@@ -51,37 +51,3 @@
     </tr>
   <% end %>
 </table>
-
-<script>
-  var status_map = <%= Part::STATUS_MAP.to_json %>;
-
-  function editPart(id, name) {
-    var status_key = $(".select-status-" + id).val();
-    var url = `${location.origin}/parts/${id}/edit`;
-    $.ajax({
-      url: url,
-      type: 'POST',
-      data: {
-        "id": id,
-        "name": name,
-        "status": status_key,
-        "redirect": false
-      },
-      success: function (result, status, xhr) {
-        var classNames = $('.label-' + id).attr("class").toString().split(' ');
-        for (var i = 0; i < classNames.length; i++) {
-          if (classNames[i].startsWith('label-status')) {
-            $('.label-' + id).removeClass(classNames[i]);
-            $('.label-' + id).addClass('label-status-' + status_key);
-          }
-        };
-        $('.label-' + id).html(status_map[status_key]);
-        $('.change-status-' + id + '-div').hide();
-        $('.label-' + id).show();
-      },
-      error: function (xhr, status, error) {
-        console.error(error);
-      }
-    });
-  }
-</script>
