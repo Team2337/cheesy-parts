@@ -24,6 +24,8 @@
 - Add new part/assembly buttons to part screen (not just assembly screen)
 - copy "quick status" dropdown from parts list to part info screen, too
 - move form validation to submit.onclick, not on sinatra routes
+- See about getting columns to wrap vertically in the 979px-767px range, rather than at 767px. Currently,
+  it keeps columns horizontal, which is too small with the PDF embed.
 
 - Hide ordering tab?
 - Slack or email integration (#parts-notification channel)?

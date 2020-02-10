@@ -56,6 +56,21 @@
         <tr><td><b>Drawing created?</b></td><td><%= (@part.drawing_created == 1) ? "Yes" : "No" %></td></tr>
         <tr><td><b>Priority</b></td><td><%= Part::PRIORITY_MAP[@part.priority] %></td></tr>
       </table>
+
+      <% if @user.can_edit? %>
+        <div class="row" style="margin-bottom: 20px">
+          <div class="span-4 pull-right">
+            <div class="pull-right">
+              <a href="/parts/<%= @part.id %>/edit" class="btn btn-primary btn-small">
+                <i class="icon-white icon-pencil"></i> Edit Part
+              </a>
+              <a href="/parts/<%= @part.id %>/delete" class="btn btn-danger btn-small">
+                <i class="icon-white icon-trash"></i> Delete Part
+              </a>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
 
     <div class="span8">
@@ -85,19 +100,6 @@
       </div>
     </div>
   </div>
-
-  <% if @user.can_edit? %>
-    <div class="row">
-      <div class="pull-right" style="margin-top: 20px;">
-        <a href="/parts/<%= @part.id %>/edit" class="btn btn-primary btn-small">
-          <i class="icon-white icon-pencil"></i> Edit this part
-        </a>
-        <a href="/parts/<%= @part.id %>/delete" class="btn btn-danger btn-small">
-          <i class="icon-white icon-trash"></i> Delete this part
-        </a>
-      </div>
-    </div>
-  <% end %>
 </div>
 
 <%= erb :footer %>
