@@ -1,11 +1,15 @@
-- Drawing Upload (PDF only)
-    - supplemental doc upload (xcarve gcode, subsystem notes/pics/sketches)?
-    - Revision history
-        - user maintained revision number
-        - auto-incrementing drawing letter
-            - actually, no b/c space and filename length. Just overwrite drawings by major revision.
-        - i.e. 2337-20-P-0517-2.pdf (or P-0517.2.pdf or P-0517_2.pdf, idk)
+- supplemental doc upload (xcarve gcode, subsystem notes/pics/sketches)?
+    - no revisions
+    - probably just a list of direct links in the part info table, rather than embeds
+    - likely need delete buttons next to each link to remove docs
+    - pdf, text/doc, images, spreadsheet, gcode (extensions?)
+        - direct external links? Or should those just go in the notes section?
+    - probably still <1 MB, should be enough for even images (but could bump to 2 or 3 MB if needed)
 - User preferences (update name, email, password)
+- Config screen for server settings
+    - max file sizes
+    - maybe just set per-project with a default
+    - could put file management on the same screen for cleanup when the server runs low on room
 - Remove extra status categories
     - Waiting for welding
     - Waiting for scotch-brite
