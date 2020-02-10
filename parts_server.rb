@@ -122,6 +122,7 @@ module CheesyParts
 
       project = Project.create(:name => params[:name].gsub("\"", "&quot;"), :part_number_prefix => params[:part_number_prefix].gsub("\"", "&quot;"), :hide_dashboards => false)
       FileUtils.mkdir_p "./uploads/#{project.id}/drawings"
+      FileUtils.mkdir_p "./uploads/#{project.id}/supp_docs"
       redirect "/projects/#{project.id}"
     end
 
@@ -261,10 +262,21 @@ module CheesyParts
 
       @part.revision = params[:revision] if (params[:revision] != "")
       if params[:drawing]
-        halt(400, "Part drawing must be less than 1MB") unless (File.size(params[:drawing][:tempfile].path)/1024/1024 <= 1)
-        # FileUtils.copy will create the directory path it needs, and will replace existing files,
-        # so don't need validation checks or to remove the old file first
+        halt(400, "Part drawing must be less than 1MB") unless (params[:drawing][:tempfile].size/1024/1024 <= 1)
+        FileUtils.mkdir_p("./uploads/#{@part.project_id}/drawings/")
+        # FileUtils.copy will replace existing files, so don't need to remove the old file first
         FileUtils.copy(params[:drawing][:tempfile].path, "./uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.#{@part.revision}.pdf")
+      end
+
+      if params[:supp_docs]
+        FileUtils.mkdir_p("./uploads/#{@part.project_id}/supp_docs/")
+        params[:supp_docs].each do |file| # Running this in separate loop b/c I don't want to upload the first few files then find out one is too big
+          halt(400, "Supplemental documents must be less than 2MB") unless (file[:tempfile].size/1024/1024 <= 2)
+        end
+        params[:supp_docs].each do |file|
+          # FileUtils.copy will replace existing files, so don't need to remove the old file first
+          FileUtils.copy(file[:tempfile].path, "./uploads/#{@part.project_id}/supp_docs/#{@part.full_part_number}.#{file[:filename]}")
+        end
       end
 
       @part.notes = params[:notes].gsub("\"", "&quot;") if params[:notes]
