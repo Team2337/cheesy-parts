@@ -55,6 +55,15 @@
         <tr><td><b>Quantity required</b></td><td><%= @part.quantity %></td></tr>
         <tr><td><b>Drawing created?</b></td><td><%= (@part.drawing_created == 1) ? "Yes" : "No" %></td></tr>
         <tr><td><b>Priority</b></td><td><%= Part::PRIORITY_MAP[@part.priority] %></td></tr>
+
+        <tr>
+          <td><b>Supplemental Documents</b></td>
+          <td>
+              <% Dir.glob("uploads/#{@part.project_id}/supp_docs/#{@part.full_part_number}.*") do |filename| %>
+                <a href="/<%= filename %>"><%= File.basename(filename).match('\.(.*)')[1] %></a><br />
+              <% end %>
+          </td>
+        </tr>
       </table>
 
       <% if @user.can_edit? %>
