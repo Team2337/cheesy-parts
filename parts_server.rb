@@ -100,6 +100,20 @@ module CheesyParts
       end
     end
 
+    get "/uploads/*/delete" do
+      require_permission(@user.can_administer?)
+
+      @file = params[:splat].first
+      erb :file_delete
+    end
+
+    post "/uploads/*/delete" do
+      require_permission(@user.can_administer?)
+
+      FileUtils.remove "./uploads/#{params[:splat].first}"
+      redirect "/projects"
+    end
+
     get "/uploads/*" do
       send_file "./uploads/#{params[:splat].first}", :disposition => "inline"
     end
