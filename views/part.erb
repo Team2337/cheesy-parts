@@ -29,6 +29,10 @@
   <div class="row">
     <div class="span4">
       <table class="table table-striped table-bordered" style="width: 100%;">
+        <colgroup>
+          <col style="width:140px" />
+          <col />
+        </colgroup>
         <tr>
           <td><b>Project</b></td>
           <td><a href="/projects/<%= @part.project_id %>"><%= @part.project.name %></a></td>
@@ -57,11 +61,26 @@
         <tr><td><b>Priority</b></td><td><%= Part::PRIORITY_MAP[@part.priority] %></td></tr>
 
         <tr>
-          <td><b>Supplemental Documents</b></td>
-          <td>
-              <% Dir.glob("uploads/#{@part.project_id}/supp_docs/#{@part.full_part_number}.*") do |filename| %>
+          <td style="height:72px;position:relative;" >
+            <b>Supplemental Documents</b>
+            <% if @user.can_edit? && Dir.glob("uploads/#{@part.project_id}/supp_docs/#{@part.full_part_number}.*").length() > 0 %>
+              <a id="editDocs" onclick="editDocs()" class="btn btn-primary btn-mini pull-right" style="position:absolute;bottom:8px;right:8px;" >
+                <i class="icon-white icon-pencil"></i>
+              </a>
+            <% end %>
+          </td>
+          <td id="supp_docs">
+            <% Dir.glob("uploads/#{@part.project_id}/supp_docs/#{@part.full_part_number}.*") do |filename| %>
+              <span id="<%= File.basename(filename).match('\.(.*)')[1] %>">
+                <span class="supp_docs_bullet" style="display:inline;">&bull;</span>
+                <span class="supp_docs_delete" style="display:none;">
+                  <a onclick="deleteDoc('<%= File.basename(filename).match('\.(.*)')[1] %>')" class="btn btn-danger btn-mini">
+                    <i class="icon-white icon-trash"></i>
+                  </a>
+                </span>
                 <a href="/parts/<%= @part.id %>/supp_docs/<%= File.basename(filename).match('\.(.*)')[1] %>"><%= File.basename(filename).match('\.(.*)')[1] %></a><br />
-              <% end %>
+              </span>
+            <% end %>
           </td>
         </tr>
       </table>
@@ -110,5 +129,29 @@
     </div>
   </div>
 </div>
+
+<script>
+  function editDocs() {
+    $(".supp_docs_bullet").toggle();
+    $(".supp_docs_delete").toggle();
+  }
+
+  function deleteDoc(filename) {
+    var url = `${location.origin}/parts/<%= @part.id %>/supp_docs/${filename}/delete`;
+    $.ajax({
+      url: url,
+      type: 'POST',
+      success: function (result, status, xhr) {
+        document.getElementById(filename).remove();
+        if ($('#supp_docs').children().length == 0) {
+          $("#editDocs").remove();
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error(error);
+      }
+    });
+  }
+</script>
 
 <%= erb :footer %>
