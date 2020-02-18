@@ -100,24 +100,6 @@ module CheesyParts
       end
     end
 
-    get "/uploads/*/delete" do
-      require_permission(@user.can_administer?)
-
-      @file = params[:splat].first
-      erb :file_delete
-    end
-
-    post "/uploads/*/delete" do
-      require_permission(@user.can_administer?)
-
-      FileUtils.remove "./uploads/#{params[:splat].first}"
-      redirect "/projects"
-    end
-
-    get "/uploads/*" do
-      send_file "./uploads/#{params[:splat].first}", :disposition => "inline"
-    end
-    
     get "/new_project" do
       require_permission(@user.can_administer?)
       erb :new_project
@@ -327,6 +309,39 @@ module CheesyParts
       params[:referrer] = nil if params[:referrer] =~ /\/parts\/#{params[:id]}$/
       redirect params[:referrer] || "/projects/#{project_id}"
     end
+
+    
+
+# File Management
+    before "/parts/:id/:doctype/:filename*" do
+      @part = Part[params[:id]]
+      halt(400, "Invalid part.") if @part.nil?
+
+      project_id = @part.project_id
+      @file = "./uploads/#{project_id}/#{params[:doctype]}/#{@part.full_part_number}.#{params[:filename]}#{".pdf" if File.extname(params[:filename]) == ''}"
+      halt(400, "Invalid file.") unless File.file?(@file)
+    end
+
+    get "/parts/:id/:doctype/:filename" do
+      send_file @file, :disposition => "inline"
+    end
+
+    get "/parts/:id/:doctype/:filename/delete" do
+      require_permission(@user.can_administer?)
+      
+      @referrer = request.referrer
+      erb :file_delete
+    end
+
+    post "/parts/:id/:doctype/:filename/delete" do
+      require_permission(@user.can_administer?)
+
+      FileUtils.remove @file
+      params[:referrer] = nil if params[:referrer] =~ /\/parts\/#{params[:id]}$/
+      redirect params[:referrer] || "/parts/#{@part.id}"
+    end
+    
+    
 
     get "/new_user" do
       require_permission(@user.can_administer?)

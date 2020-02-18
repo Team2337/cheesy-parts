@@ -60,7 +60,7 @@
           <td><b>Supplemental Documents</b></td>
           <td>
               <% Dir.glob("uploads/#{@part.project_id}/supp_docs/#{@part.full_part_number}.*") do |filename| %>
-                <a href="/<%= filename %>"><%= File.basename(filename).match('\.(.*)')[1] %></a><br />
+                <a href="/parts/<%= @part.id %>/supp_docs/<%= File.basename(filename).match('\.(.*)')[1] %>"><%= File.basename(filename).match('\.(.*)')[1] %></a><br />
               <% end %>
           </td>
         </tr>
@@ -95,8 +95,8 @@
             <div class="tab-pane <%= "active" if i == @part.revision %>" id="<%= "rev#{i}" %>">
               <% if File.file?("uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.#{i}.pdf") %>
                 <div style="position: relative; padding-bottom: 82%; /* 4:3 */	padding-top: 25px; height: 0;">
-                  <object data="<%= "/uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.#{i}.pdf" %>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%">
-                    <a href="<%= "/uploads/#{@part.project_id}/drawings/#{@part.full_part_number}.#{i}.pdf" %>"><%= "#{@part.full_part_number}.#{i}.pdf" %></a>
+                  <object data="<%= "/parts/#{@part.id}/drawings/#{i}" %>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%">
+                    <a href="<%= "/parts/#{@part.id}/drawings/#{i}" %>"><%= "#{@part.full_part_number}.#{i}.pdf" %></a>
                   </object>
                 </div>
               <% else %>
